@@ -224,9 +224,9 @@
       </form>
 
       <div class="actions">
-        <button class="btn primary" id="submitBtn">إدخال</button>
-        <button class="btn secondary" id="exportCsvBtn" title="تصدير البيانات إلى CSV">تصدير CSV</button>
-        <button class="btn secondary" id="clearAllBtn" title="مسح كل البيانات">مسح الكل</button>
+        <button type="button" class="btn primary" id="submitBtn">إدخال</button>
+        <button type="button" class="btn secondary" id="exportCsvBtn" title="تصدير البيانات إلى CSV">تصدير CSV</button>
+        <button type="button" class="btn secondary" id="clearAllBtn" title="مسح كل البيانات">مسح الكل</button>
       </div>
 
       <div class="table-wrap">
@@ -380,7 +380,7 @@
       const esc = (v) => {
         const s = (v ?? '').toString().replace(/"/g,'""');
         // إذا كان يحتوي فواصل/أسطر، ضع قيمة بين علامتي اقتباس
-        return /[",\n]/.test(s) ? `"${s}"` : s;
+        return /[",\n\r]/.test(s) ? `"${s}"` : s;
       };
       const lines = [
         headers.join(','),
@@ -390,7 +390,8 @@
           esc(r.governorate), esc(r.address), esc(r.notes || '')
         ].join(','))
       ];
-      return lines.join('\n');
+      // استخدم CRLF لملفات Windows وCSV، وإضافة BOM لعرض صحيح في Excel
+      return '\uFEFF' + lines.join('\r\n');
     };
 
     exportCsvBtn.addEventListener('click', () => {
